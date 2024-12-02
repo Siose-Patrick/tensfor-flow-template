@@ -68,3 +68,61 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+npm install @tensorflow/tfjs
+import * as tf from '@tensorflow/tfjs'
+import * as modelName from '@tensorflow-models/mobilenet'
+
+// Load Model
+const loadModel = async () => {
+const model = await mobilenet.load();
+return model;
+console.log('Model loaded successfully!');
+};
+
+// Get Data
+Get data from tsfj package
+import { csv } from '@tensorflow/tfjs-data';
+
+const data = await csv('path_to_data.csv').toArray();
+
+
+// Image prediction model: 
+npm install @tensorflow-models/mobilenet
+
+// UI Interface
+import React, { useState } from 'react';
+
+const App = () => {
+    const [image, setImage] = useState(null);
+    const [predictions, setPredictions] = useState([]);
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setImage(URL.createObjectURL(file));
+    };
+
+    return (
+        <div>
+            <h1>Image Predictor</h1>
+            <input type="file" onChange={handleImageUpload} />
+            {image && <img src={image} alt="Uploaded" />}
+            <button>Predict</button>
+            <div>
+                {predictions.map((pred, idx) => (
+                    <p key={idx}>{pred.className}: {pred.probability.toFixed(2)}</p>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default App;
+
+const predict = async () => {
+    const model = await loadModel();
+    const img = document.querySelector('img');
+    const predictions = await model.classify(img);
+    setPredictions(predictions);
+};
+
